@@ -40,7 +40,6 @@ services:
       - pgdb
     ports:
       - "80:80"
-      - "445:443"
     volumes:
       - ./src:/var/www/html
       - ./certs:/etc/apache2/ssl
