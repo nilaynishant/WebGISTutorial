@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: myrootpassword
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - ./pgdb_data:/var/lib/postgresql/data
     networks:
@@ -39,7 +39,7 @@ services:
       - geoserver
       - pgdb
     ports:
-      - "83:80"
+      - "80:80"
       - "445:443"
     volumes:
       - ./src:/var/www/html

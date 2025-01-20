@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Web Mapping Tutorial - Part 1</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css" />
+  <style>
+    #map {
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <h1>Web Mapping Tutorial - Part 1</h1>
+  <div id="map"></div>
+  <div id="feature-info">Test</div>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="./utils/getFeatureInfo.js"></script>
+  <script>
+    // Initialize the map
+    function initMap() {
+      var map = L.map('map').setView([25.505, 92.05], 8);
+      return map;
+    }
+
+    // Add the OpenStreetMap base layer
+    function addBaseLayer(map) {
+      var openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+      });
+      openStreetMapLayer.addTo(map);
+      return openStreetMapLayer;
+    }
+
+    // Add a marker
+    function addMarker(map) {
+      var marker = L.marker([25.505, 92.05]);
+      marker.bindPopup("<b>Hello!</b><br>This is a custom marker.").openPopup();
+      marker.addTo(map);
+      return marker;
+    }
+
+    // Add a WMS layer
+    function addWMSLayer(map) {
+      var wmsLayerUrl = 'https://geoserver.nesdr.gov.in/geoserver/eatlas/wms';
+      var wmsLayer = L.tileLayer.wms(wmsLayerUrl, {
+        layers: 'eatlas:manipur_district_boundary',
+        format: 'image/png',
+        transparent: true,
+        attribution: 'WMS data &copy; <a href="URL_TO_YOUR_DATA_SOURCE">Data Source</a>'
+      });
+      wmsLayer.addTo(map);
+      return wmsLayer;
+    }
+
+    // Add measure control
+    function addMeasureControl(map) {
+      L.control.measure({
+        primaryLengthUnit: 'meters',
+        secondaryLengthUnit: 'kilometers',
+        primaryAreaUnit: 'sqmeters',
+        secondaryAreaUnit: 'hectares'
+      }).addTo(map);
+    }
+
+    // Add layer control
+    function addLayerControl(map, overlayLayers) {
+      L.control.layers(null, overlayLayers).addTo(map);
+    }
+
+    // Add right-click to add marker functionality
+    function addContextMenu(map) {
+      map.on('contextmenu', function (e) {
+        var newMarker = L.marker(e.latlng).addTo(map);
+        newMarker.bindPopup("New Marker").openPopup();
+      });
+    }
+
+    // Initialize the application
+    function initApp() {
+      var map = initMap();
+      addBaseLayer(map);
+      var marker = addMarker(map);
+      var wmsLayer = addWMSLayer(map);
+      addMeasureControl(map);
+      addLayerControl(map, { "Marker": marker, "WMS Layer": wmsLayer });
+      addContextMenu(map);
+      setupGetFeatureInfo(map, wmsLayer); // This function is now imported from getFeatureInfo.js
+    }
+
+    // Start the application
+    initApp();
+  </script>
+</body>
+</html>
